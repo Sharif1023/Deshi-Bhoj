@@ -191,29 +191,6 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
         background: rgba(5, 15, 10, .20);
     }
 
-    .site-mobile-menu__track {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: .7rem;
-        padding: .9rem 1rem;
-        border: 1px solid rgba(216, 198, 162, .32);
-        border-radius: 999px;
-        color: #fffaf0;
-        font-size: .88rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background-color .18s ease, border-color .18s ease, color .18s ease;
-    }
-
-    .site-mobile-menu__track:hover,
-    .site-mobile-menu__track:focus-visible {
-        border-color: #d8c6a2;
-        background: rgba(216, 198, 162, .10);
-        color: #d8c6a2;
-    }
-
     .site-mobile-menu__booking {
         display: flex;
         width: 100%;
@@ -255,6 +232,18 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
         to { transform: translateX(0); }
     }
 }
+
+/* Keep the selected item gold on laptop/desktop, matching mobile. */
+@media (min-width: 1024px) {
+    .site-desktop-nav a[aria-current="page"] {
+        color: #d8c6a2;
+    }
+
+    .site-desktop-track[aria-current="page"] {
+        border-color: #d8c6a2;
+        color: #d8c6a2;
+    }
+}
 </style>
 </head><body class="[&_.ql-color-red]:text-[#c23935] [&_.ql-color-gold]:text-[#ac853b] [&_.ql-color-green]:text-[#398047] [&_.ql-color-blue]:text-[#2563eb] [&_.ql-color-purple]:text-[#7c3aed] [&_.ql-color-white]:text-[#fff] [&_.ql-color-black]:text-[#111] font-sans text-ink antialiased [&_a]:focus-visible:outline [&_button]:focus-visible:outline [&_input]:focus-visible:outline [&_select]:focus-visible:outline [&_textarea]:focus-visible:outline [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-4 [&_:focus-visible]:outline-accent motion-reduce:[&_*]:!transition-none motion-reduce:[&_*]:!animate-none motion-reduce:[&_*]:!scroll-auto print:!bg-white print:!text-black print:[&_header]:!hidden print:[&_footer]:!hidden print:[&_aside]:!hidden print:[&_main]:!p-0 <?= $isAdmin?'admin-body bg-stone-100':'bg-paper'; ?>">
 <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:p-4">Skip to content</a>
@@ -273,10 +262,12 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 <header class="site-header sticky top-0 z-40 border-b border-white/10 bg-[#153e2e] text-paper backdrop-blur-lg">
 <div class="mx-auto flex max-w-[1440px] flex-nowrap items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-8 xl:flex-nowrap lg:px-10">
 <a href="/" class="min-w-0 shrink font-display text-3xl sm:text-4xl" aria-label="<?= e($brand); ?> home"><?php if(setting('brand.logo','')): ?><img class="h-12 max-w-40 object-contain" src="<?= e(safeImage(setting('brand.logo'))); ?>" alt="<?= e($brand); ?>"><?php else: ?><?= e($brand); ?><span class="rich-inline [&_.ql-color-red]:text-[#c23935] [&_.ql-color-gold]:text-[#ac853b] [&_.ql-color-green]:text-[#398047] [&_.ql-color-blue]:text-[#2563eb] [&_.ql-color-purple]:text-[#7c3aed] [&_.ql-color-white]:text-[#fff] [&_.ql-color-black]:text-[#111] [&_strong]:font-bold [&_em]:italic [&_p]:[display:inline] [&_p+p]:ml-1 mt-1 block font-sans text-xs tracking-[.22em]"><?= rich_inline(setting('brand.tagline','বাংলার স্বাদ')); ?></span><?php endif; ?></a>
-<nav aria-label="Main navigation" class="hidden items-center gap-6 text-sm lg:flex"><?php foreach($nav as $href=>$key): ?><a class="transition-colors hover:text-[#d8c6a2]" href="<?= e($href); ?>"><?= e(setting('navigation.'.$key,ucfirst($key))); ?></a><?php endforeach; ?></nav>
+<nav aria-label="Main navigation" class="site-desktop-nav hidden items-center gap-6 text-sm lg:flex"><?php foreach($nav as $href=>$key): ?>
+<a class="transition-colors hover:text-[#d8c6a2]" <?= ($page??'')===$key?'aria-current="page"':''; ?> href="<?= e($href); ?>"><?= e(setting('navigation.'.$key,ucfirst($key))); ?></a>
+<?php endforeach; ?></nav>
 <div class="public-header-actions flex shrink-0 items-center justify-end gap-2 sm:gap-3">
 <div class="hidden lg:block"><?php require __DIR__.'/store/language-selector.php'; ?></div>
-<a class="hidden rounded-full border border-white/30 px-4 py-3 text-sm lg:inline-block" href="/track-order">অর্ডার ট্র্যাক করুন</a>
+<a class="site-desktop-track hidden rounded-full border border-white/30 px-4 py-3 text-sm transition-colors hover:border-[#d8c6a2] hover:text-[#d8c6a2] lg:inline-block" <?= in_array(($page??''),['track','order'],true)?'aria-current="page"':''; ?> href="/track-order">অর্ডার ট্র্যাক করুন</a>
 <a class="rounded-full border border-white/30 px-3 py-3 text-sm sm:px-4" href="/cart">কার্ট (<?= array_sum($_SESSION['cart']??[]); ?>)</a>
 <a class="btn items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-800 disabled:opacity-40 hidden xl:inline-flex" href="/contact#reserve">টেবিল বুকিং</a>
 <button type="button" class="site-mobile-menu-trigger rounded-lg border border-white/30 text-paper lg:hidden" data-site-menu-open aria-controls="mobile-navigation" aria-expanded="false" aria-label="মেনু খুলুন">
@@ -304,6 +295,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 <?php foreach($nav as $href=>$key): ?>
 <a class="site-mobile-menu__link" href="<?= e($href); ?>" <?= ($page??'')===$key?'aria-current="page"':''; ?>><?= e(setting('navigation.'.$key,ucfirst($key))); ?></a>
 <?php endforeach; ?>
+<a class="site-mobile-menu__link" href="/track-order" <?= in_array(($page??''),['track','order'],true)?'aria-current="page"':''; ?>>অর্ডার ট্র্যাক করুন</a>
 </nav>
 
 <p class="site-mobile-menu__section-label">ভাষা নির্বাচন</p>
@@ -313,7 +305,6 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 </div>
 
 <div class="site-mobile-menu__footer">
-<a class="site-mobile-menu__track" href="/track-order">অর্ডার ট্র্যাক করুন</a>
 <a class="site-mobile-menu__booking bg-accent hover:bg-orange-800" href="/contact#reserve">টেবিল বুকিং</a>
 </div>
 </aside>
