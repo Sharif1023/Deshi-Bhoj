@@ -1,0 +1,8 @@
+.env
+node_modules/
+vendor/
+storage/*.sqlite*
+storage/logs/*
+storage/sessions/*
+storage/uploads/*
+!storage/**/.gitkeep

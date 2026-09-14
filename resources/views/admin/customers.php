@@ -1,0 +1,8 @@
+<section class="card rounded-2xl border border-stone-200 bg-white p-6 shadow-sm overflow-x-auto"><div class="mb-6 flex justify-between"><h2 class="font-display [overflow-wrap:anywhere] text-2xl">Your guests</h2><a href="/control-center/export/customers" class="btn-dark inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition disabled:opacity-40 bg-ink hover:bg-stone-700">Export CSV</a></div><table class="w-full text-left text-sm"><thead><tr><th class="border-b px-4 py-3 text-xs uppercase tracking-wide text-stone-500">Name</th><th class="border-b px-4 py-3 text-xs uppercase tracking-wide text-stone-500">Email</th><th class="border-b px-4 py-3 text-xs uppercase tracking-wide text-stone-500">Phone</th><th class="border-b px-4 py-3 text-xs uppercase tracking-wide text-stone-500">Orders</th><th class="border-b px-4 py-3 text-xs uppercase tracking-wide text-stone-500">Ordered value</th></tr></thead><tbody><?php foreach (
+    $rows
+    as $r
+): ?><tr><td class="border-b border-stone-100 px-4 py-4"><?= e($r['name']) ?></td><td class="border-b border-stone-100 px-4 py-4"><?= e($r['email']) ?></td><td class="border-b border-stone-100 px-4 py-4"><?= e(
+    $r['phone'],
+) ?></td><td class="border-b border-stone-100 px-4 py-4"><?= $r['orders_count'] ?></td><td class="border-b border-stone-100 px-4 py-4"><?= money(
+    (int) $r['total'],
+) ?></td></tr><?php endforeach; ?></tbody></table><p class="mt-5 text-xs text-stone-500">Guests are grouped by ordering email. Ordered value includes unpaid and cancelled orders; it is not collected revenue.</p></section>

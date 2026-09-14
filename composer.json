@@ -1,0 +1,27 @@
+{
+  "name": "koji/restaurant",
+  "description": "PHP MVC restaurant storefront and CMS",
+  "type": "project",
+  "require": {
+    "php": "^8.2",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-mbstring": "*",
+    "ext-fileinfo": "*",
+    "ext-pdo_mysql": "*",
+    "ext-dom": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "scripts": {
+    "test": "php tests/run.php",
+    "serve": "php -d upload_max_filesize=5M -d post_max_size=6M -S localhost:8000 -t public public/router.php"
+  },
+  "suggest": {
+    "ext-gd": "Optional image processing; uploads do not require GD."
+  }
+}

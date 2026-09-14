@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+require dirname(__DIR__).'/app/Core/bootstrap.php';
+use App\Core\{DB,Auth};
+function prompt(string $label): string {fwrite(STDOUT,$label);return trim(fgets(STDIN)?:'');}
+$command=$argv[1]??'help';
+try {switch($command){
+ case 'doctor':require ROOT.'/bin/doctor.php';break;
+ case 'install':require ROOT.'/database/migrate.php';require ROOT.'/database/seed.php';require ROOT.'/database/upgrade-v2.php';require ROOT.'/database/upgrade-bd.php';require ROOT.'/database/upgrade-v3.php';echo "Database installed. Create an owner: php bin/console user:create\n";break;
+ case 'upgrade':require ROOT.'/database/migrate.php';require ROOT.'/database/upgrade-v3.php';echo "Upgrade complete. Existing content, users, orders and uploads preserved.\n";break;
+ case 'user:create':
+  $name=trim(prompt('Name: '));$email=strtolower(trim(prompt('Email: ')));$password=getenv('ADMIN_PASSWORD')?:prompt('Password (12+ characters; visible input): ');
+  if(!$name||!filter_var($email,FILTER_VALIDATE_EMAIL))throw new RuntimeException('Invalid name/email.');
+  DB::insert('users',['name'=>$name,'email'=>$email,'password'=>Auth::password($password),'role'=>'owner','created_at'=>date('Y-m-d H:i:s')]);echo "Owner created. Sign in at /control-center\n";break;
+ case 'user:reset':$email=strtolower(trim(prompt('Email: ')));$password=getenv('ADMIN_PASSWORD')?:prompt('New password (visible input): ');$s=DB::run('UPDATE users SET password=?,session_version=session_version+1 WHERE email=?',[Auth::password($password),$email]);echo $s->rowCount()?"Password reset; old sessions revoked.\n":"Account not found.\n";break;
+ case 'maintenance':DB::run('DELETE FROM rate_limits WHERE expires_at<?',[time()]);DB::run('DELETE FROM password_resets WHERE expires_at<?',[time()]);foreach(glob(ROOT.'/storage/sessions/sess_*') as $f)if(filemtime($f)<time()-86400)unlink($f);echo "Expired records cleaned.\n";break;
+ default:echo "Commands: install, upgrade, doctor, user:create, user:reset, maintenance\n";
+}}catch(Throwable $e){fwrite(STDERR,$e->getMessage()."\n");exit(1);}

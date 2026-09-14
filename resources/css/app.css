@@ -1,0 +1,4 @@
+/* Edit Tailwind classes in the PHP views and JavaScript components. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
