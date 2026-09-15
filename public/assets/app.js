@@ -45,11 +45,35 @@ if (orderTypes.length) {
   orderTypes.forEach(input => input.addEventListener('change', update)); update();
 }
 
-const navToggle = document.querySelector('[data-nav-toggle]'), mobileNav = document.querySelector('[data-mobile-nav]'), navClose = document.querySelector('[data-nav-close]');
-const closeMobileNav = () => { if (!mobileNav) return; mobileNav.hidden = true; document.querySelector('[data-nav-backdrop]')?.remove(); navToggle?.setAttribute('aria-expanded', 'false'); if (navToggle) navToggle.textContent = menuLabel; };
-navToggle?.addEventListener('click', () => { const open = mobileNav.hidden; mobileNav.hidden = !open; if (open && document.body && document.createElement) { const backdrop = document.createElement('div'); backdrop.className = 'fixed inset-0 z-30 bg-black/50 lg:hidden'; backdrop.dataset.navBackdrop = ''; backdrop.addEventListener('click', closeMobileNav); document.body.append(backdrop); } else if (!open) document.querySelector('[data-nav-backdrop]')?.remove(); navToggle.setAttribute('aria-expanded', String(open)); navToggle.textContent = open ? closeLabel : menuLabel; });
-navClose?.addEventListener('click', closeMobileNav);
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && mobileNav && !mobileNav.hidden) { mobileNav.hidden = true; navToggle.setAttribute('aria-expanded', 'false'); navToggle.textContent = menuLabel; navToggle.focus(); } });
+const mobileMenu = document.getElementById('mobile-navigation');
+const mobileMenuOpen = document.querySelector('[data-site-menu-open]');
+if (mobileMenu && mobileMenuOpen) {
+  let lastFocused = null;
+  const closeMobileMenu = (restoreFocus = true) => {
+    mobileMenu.hidden = true;
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    mobileMenuOpen.setAttribute('aria-expanded', 'false');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    if (restoreFocus) lastFocused?.focus();
+  };
+  const openMobileMenu = () => {
+    if (!window.matchMedia('(max-width: 1279.98px)').matches) return;
+    lastFocused = document.activeElement;
+    mobileMenu.hidden = false;
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    mobileMenuOpen.setAttribute('aria-expanded', 'true');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    mobileMenu.querySelector('.site-mobile-menu__close')?.focus();
+  };
+  mobileMenuOpen.addEventListener('click', openMobileMenu);
+  mobileMenu.querySelectorAll('[data-site-menu-close]').forEach(button => button.addEventListener('click', () => closeMobileMenu()));
+  mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMobileMenu(false)));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !mobileMenu.hidden) closeMobileMenu();
+  });
+}
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) { const io = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.remove('opacity-0', 'translate-y-6'); io.unobserve(entry.target); } }), { threshold: .08 }); document.querySelectorAll('body:not(.admin-body) main section > div, [data-reveal]').forEach(element => { if (element.getBoundingClientRect().top > innerHeight * .8) { element.classList.add('opacity-0', 'translate-y-6', 'transition-[opacity,transform]', 'duration-700', 'ease-out', 'motion-reduce:opacity-100', 'motion-reduce:transform-none'); io.observe(element); } }); }
 document.querySelectorAll('[data-product-gallery]').forEach(gallery => { const hero = gallery.querySelector('[data-product-main]'), zoom = gallery.querySelector('[data-product-zoom]'); gallery.querySelectorAll('[data-product-thumb]').forEach(button => button.addEventListener('click', () => { hero.src = button.dataset.productThumb; if (zoom) zoom.href = button.dataset.productThumb; gallery.querySelectorAll('[data-product-thumb]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); })); });
 document.querySelectorAll('[data-print]').forEach(button => button.addEventListener('click', () => window.print()));

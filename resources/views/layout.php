@@ -13,7 +13,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 
 <style>
 /* Mobile menu only — desktop/laptop layout is left unchanged. */
-@media (max-width: 1023.98px) {
+@media (max-width: 1279.98px) {
     .site-mobile-menu[hidden] { display: none !important; }
 
     .site-mobile-menu {
@@ -234,7 +234,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 }
 
 /* Keep the selected item gold on laptop/desktop, matching mobile. */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
     .site-desktop-nav a[aria-current="page"] {
         color: #d8c6a2;
     }
@@ -262,21 +262,21 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 <header class="site-header sticky top-0 z-40 border-b border-white/10 bg-[#153e2e] text-paper backdrop-blur-lg">
 <div class="mx-auto flex max-w-[1440px] flex-nowrap items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-8 xl:flex-nowrap lg:px-10">
 <a href="/" class="min-w-0 shrink font-display text-3xl sm:text-4xl" aria-label="<?= e($brand); ?> home"><?php if(setting('brand.logo','')): ?><img class="h-12 max-w-40 object-contain" src="<?= e(safeImage(setting('brand.logo'))); ?>" alt="<?= e($brand); ?>"><?php else: ?><?= e($brand); ?><span class="rich-inline [&_.ql-color-red]:text-[#c23935] [&_.ql-color-gold]:text-[#ac853b] [&_.ql-color-green]:text-[#398047] [&_.ql-color-blue]:text-[#2563eb] [&_.ql-color-purple]:text-[#7c3aed] [&_.ql-color-white]:text-[#fff] [&_.ql-color-black]:text-[#111] [&_strong]:font-bold [&_em]:italic [&_p]:[display:inline] [&_p+p]:ml-1 mt-1 block font-sans text-xs tracking-[.22em]"><?= rich_inline(setting('brand.tagline','বাংলার স্বাদ')); ?></span><?php endif; ?></a>
-<nav aria-label="Main navigation" class="site-desktop-nav hidden items-center gap-6 text-sm lg:flex"><?php foreach($nav as $href=>$key): ?>
+<nav aria-label="Main navigation" class="site-desktop-nav hidden items-center gap-6 text-sm xl:flex"><?php foreach($nav as $href=>$key): ?>
 <a class="transition-colors hover:text-[#d8c6a2]" <?= ($page??'')===$key?'aria-current="page"':''; ?> href="<?= e($href); ?>"><?= e(setting('navigation.'.$key,ucfirst($key))); ?></a>
 <?php endforeach; ?></nav>
 <div class="public-header-actions flex shrink-0 items-center justify-end gap-2 sm:gap-3">
-<div class="hidden lg:block"><?php require __DIR__.'/store/language-selector.php'; ?></div>
-<a class="site-desktop-track hidden rounded-full border border-white/30 px-4 py-3 text-sm transition-colors hover:border-[#d8c6a2] hover:text-[#d8c6a2] lg:inline-block" <?= in_array(($page??''),['track','order'],true)?'aria-current="page"':''; ?> href="/track-order">অর্ডার ট্র্যাক করুন</a>
+<div class="hidden xl:block"><?php require __DIR__.'/store/language-selector.php'; ?></div>
+<a class="site-desktop-track hidden rounded-full border border-white/30 px-4 py-3 text-sm transition-colors hover:border-[#d8c6a2] hover:text-[#d8c6a2] xl:inline-block" <?= in_array(($page??''),['track','order'],true)?'aria-current="page"':''; ?> href="/track-order">অর্ডার ট্র্যাক করুন</a>
 <a class="rounded-full border border-white/30 px-3 py-3 text-sm sm:px-4" href="/cart">কার্ট (<?= array_sum($_SESSION['cart']??[]); ?>)</a>
 <a class="btn items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-800 disabled:opacity-40 hidden xl:inline-flex" href="/contact#reserve">টেবিল বুকিং</a>
-<button type="button" class="site-mobile-menu-trigger rounded-lg border border-white/30 text-paper lg:hidden" data-site-menu-open aria-controls="mobile-navigation" aria-expanded="false" aria-label="মেনু খুলুন">
+<button type="button" class="site-mobile-menu-trigger rounded-lg border border-white/30 text-paper xl:hidden" data-site-menu-open aria-controls="mobile-navigation" aria-expanded="false" aria-label="মেনু খুলুন">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
 </div>
 </div>
 
-<div id="mobile-navigation" class="site-mobile-menu lg:hidden" aria-hidden="true" hidden>
+<div id="mobile-navigation" class="site-mobile-menu xl:hidden" aria-hidden="true" hidden>
 <button type="button" class="site-mobile-menu__backdrop" data-site-menu-close aria-label="মেনু বন্ধ করুন"></button>
 <aside class="site-mobile-menu__panel" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
 <div class="site-mobile-menu__top">
@@ -310,53 +310,6 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 </aside>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const menu = document.getElementById('mobile-navigation');
-    const openButton = document.querySelector('[data-site-menu-open]');
-    const closeButtons = document.querySelectorAll('[data-site-menu-close]');
-    const mobileQuery = window.matchMedia('(max-width: 1023.98px)');
-    let lastFocused = null;
-
-    if (!menu || !openButton) return;
-
-    const closeMenu = (restoreFocus = true) => {
-        menu.hidden = true;
-        menu.setAttribute('aria-hidden', 'true');
-        openButton.setAttribute('aria-expanded', 'false');
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-        if (restoreFocus && lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
-    };
-
-    const openMenu = () => {
-        if (!mobileQuery.matches) return;
-        lastFocused = document.activeElement;
-        menu.hidden = false;
-        menu.setAttribute('aria-hidden', 'false');
-        openButton.setAttribute('aria-expanded', 'true');
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-        const closeButton = menu.querySelector('.site-mobile-menu__close');
-        if (closeButton) window.setTimeout(() => closeButton.focus(), 30);
-    };
-
-    openButton.addEventListener('click', openMenu);
-    closeButtons.forEach((button) => button.addEventListener('click', () => closeMenu(true)));
-    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu(false)));
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && !menu.hidden) closeMenu(true);
-    });
-
-    const handleBreakpoint = () => {
-        if (!mobileQuery.matches && !menu.hidden) closeMenu(false);
-    };
-
-    if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', handleBreakpoint);
-    else mobileQuery.addListener(handleBreakpoint);
-});
-</script>
 </header>
 <main id="main-content">
 <?php endif; ?>
