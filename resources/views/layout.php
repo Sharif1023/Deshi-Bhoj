@@ -8,7 +8,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 <meta name="description" content="<?= e($isAdmin?'রেস্টুরেন্ট ব্যবস্থাপনা':plain(($page??'')==='home'?setting('seo.description','বাংলাদেশি খাবার'):$title??'Restaurant')); ?>">
 <?php if($isAdmin||in_array($page??'',['cart','checkout','track','order'])): ?><meta name="robots" content="noindex,nofollow"><?php endif; ?>
 <?php if($isAdmin): ?><link rel="stylesheet" href="/assets/quill.snow.css"><?php endif; ?>
-<link rel="stylesheet" href="/assets/app.css"><script src="/assets/app.js" defer></script>
+<link rel="stylesheet" href="/assets/app.css"><script src="/assets/app.js?v=<?= e((string) filemtime(ROOT.'/public/assets/app.js')); ?>" defer></script>
 <?php if($isAdmin): ?><script src="/assets/quill.js" defer></script><script src="/assets/admin.js" defer></script><?php endif; ?>
 
 <style>
@@ -41,6 +41,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
         right: 0;
         display: flex;
         width: min(88vw, 390px);
+        height: 100vh;
         height: 100dvh;
         flex-direction: column;
         overflow: hidden;
@@ -275,6 +276,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 </button>
 </div>
 </div>
+</header>
 
 <div id="mobile-navigation" class="site-mobile-menu xl:hidden" aria-hidden="true" hidden>
 <button type="button" class="site-mobile-menu__backdrop" data-site-menu-close aria-label="মেনু বন্ধ করুন"></button>
@@ -309,8 +311,6 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 </div>
 </aside>
 </div>
-
-</header>
 <main id="main-content">
 <?php endif; ?>
 <?php if($notice): ?><div role="status" class="mx-auto my-5 max-w-6xl rounded-xl border border-green-300 bg-green-50 p-4 text-green-900"><?= e($notice); ?></div><?php endif; ?>

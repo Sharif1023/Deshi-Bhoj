@@ -49,26 +49,42 @@ const mobileMenu = document.getElementById('mobile-navigation');
 const mobileMenuOpen = document.querySelector('[data-site-menu-open]');
 if (mobileMenu && mobileMenuOpen) {
   let lastFocused = null;
+  let lockedScrollY = 0;
+  const preventBackgroundScroll = event => {
+    if (!(event.target instanceof Element) || !event.target.closest('.site-mobile-menu__panel')) event.preventDefault();
+  };
   const closeMobileMenu = (restoreFocus = true) => {
     mobileMenu.hidden = true;
     mobileMenu.setAttribute('aria-hidden', 'true');
     mobileMenuOpen.setAttribute('aria-expanded', 'false');
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
-    if (restoreFocus) lastFocused?.focus();
+    document.removeEventListener('touchmove', preventBackgroundScroll);
+    window.scrollTo(0, lockedScrollY);
+    if (restoreFocus) lastFocused?.focus({ preventScroll: true });
   };
   const openMobileMenu = () => {
     if (!window.matchMedia('(max-width: 1279.98px)').matches) return;
     lastFocused = document.activeElement;
+    lockedScrollY = window.scrollY;
     mobileMenu.hidden = false;
     mobileMenu.setAttribute('aria-hidden', 'false');
     mobileMenuOpen.setAttribute('aria-expanded', 'true');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
-    mobileMenu.querySelector('.site-mobile-menu__close')?.focus();
+    document.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
+    mobileMenu.querySelector('.site-mobile-menu__close')?.focus({ preventScroll: true });
+    window.scrollTo(0, lockedScrollY);
   };
-  mobileMenuOpen.addEventListener('click', openMobileMenu);
-  mobileMenu.querySelectorAll('[data-site-menu-close]').forEach(button => button.addEventListener('click', () => closeMobileMenu()));
+  mobileMenuOpen.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    openMobileMenu();
+  });
+  mobileMenu.querySelectorAll('[data-site-menu-close]').forEach(button => button.addEventListener('click', event => {
+    event.preventDefault();
+    closeMobileMenu();
+  }));
   mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMobileMenu(false)));
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !mobileMenu.hidden) closeMobileMenu();
