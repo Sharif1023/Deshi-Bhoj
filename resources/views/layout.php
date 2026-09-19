@@ -8,7 +8,7 @@ $nav=['/'=>'home','/menu'=>'menu','/about'=>'about','/gallery'=>'gallery','/cont
 <meta name="description" content="<?= e($isAdmin?'রেস্টুরেন্ট ব্যবস্থাপনা':plain(($page??'')==='home'?setting('seo.description','বাংলাদেশি খাবার'):$title??'Restaurant')); ?>">
 <?php if($isAdmin||in_array($page??'',['cart','checkout','track','order'])): ?><meta name="robots" content="noindex,nofollow"><?php endif; ?>
 <?php if($isAdmin): ?><link rel="stylesheet" href="/assets/quill.snow.css"><?php endif; ?>
-<link rel="stylesheet" href="/assets/app.css"><script src="/assets/app.js?v=<?= e((string) filemtime(ROOT.'/public/assets/app.js')); ?>" defer></script>
+<link rel="stylesheet" href="/assets/app.css?v=<?= e((string) filemtime(ROOT.'/public/assets/app.css')); ?>"><script src="/assets/app.js?v=<?= e((string) filemtime(ROOT.'/public/assets/app.js')); ?>" defer></script>
 <?php if($isAdmin): ?><script src="/assets/quill.js" defer></script><script src="/assets/admin.js" defer></script><?php endif; ?>
 
 <style>
